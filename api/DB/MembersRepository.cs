@@ -1,10 +1,8 @@
+using EzraTest.Models;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using EzraTest.Models;
-
-using Microsoft.Data.Sqlite;
 
 namespace EzraTest.DB
 {
@@ -48,22 +46,21 @@ namespace EzraTest.DB
         /// <inheritdoc />
         public void AddMember(Member member)
         {
-            // TODO
-            throw new NotImplementedException();
+            member.Id = Guid.NewGuid();
+            
+            ExecuteNonQuery($"INSERT INTO MEMBERS (ID, Name, Email) VALUES ({member.Id}, {member.Name}, {member.Email})");
         }
 
         /// <inheritdoc />
         public void UpdateMember(Guid id, Member member)
         {
-            // TODO
-            throw new NotImplementedException();
+            ExecuteNonQuery($"UPDATE MEMBERS SET NAME = '{member.Name}', EMAIL = '{member.Email}' WHERE ID = '{id}'");
         }
 
         /// <inheritdoc />
         public void DeleteMember(Guid id)
         {
-            // TODO
-            throw new NotImplementedException();
+            ExecuteNonQuery($"DELETE FROM MEMBERS WHERE ID = '{id}'");
         }
 
         private IEnumerable<T> ExecuteQuery<T>(string commandText, Func<SqliteDataReader, T> func)
@@ -85,7 +82,7 @@ namespace EzraTest.DB
             }
         }
 
-        private IEnumerable<T> ExecuteNonQuery<T>(string commandText)
+        private void ExecuteNonQuery(string commandText)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {

@@ -20,7 +20,6 @@ namespace EzraTest.Controllers
         }
 
         [HttpGet]
-        [Route("")]
         public IEnumerable<Member> GetAllMembers()
         {
             return _membersRepository.GetMembers();
@@ -33,13 +32,24 @@ namespace EzraTest.Controllers
             return _membersRepository.GetMember(id);
         }
 
-        // TODO
-        // Add an endpoint to add members
+        [HttpPost]
+        public void AddMember(Member member)
+        {
+            _membersRepository.AddMember(member);
+        }
 
-        // TODO
-        // Add an endpoint to update a member
+        [HttpPut]
+        [Route("{id}")]
+        public void UpdateMember(Guid id, Member member)
+        {
+            _membersRepository.UpdateMember(id, member);
+        }
 
-        // TODO
-        // Add an endpoint to delete a member
+        [HttpDelete]
+        [Route("{id}")]
+        public void DeleteMember(Guid id)
+        {
+            _membersRepository.DeleteMember(id);
+        }
     }
 }
