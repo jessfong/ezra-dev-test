@@ -1,0 +1,19 @@
+.img-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  border: black 1px solid;
+  border-radius: 5px;
+
+  height: 24px;
+  width: 24px;
+  margin: 4px;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: row;
+}
