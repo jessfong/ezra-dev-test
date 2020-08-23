@@ -20,36 +20,54 @@ namespace EzraTest.Controllers
         }
         
         [HttpGet]
-        public IEnumerable<Member> GetAllMembers()
+        public ActionResult<IEnumerable<Member>> GetAllMembers()
         {
-            return _membersRepository.GetMembers();
+            return Ok(_membersRepository.GetMembers());
         }
 
         [HttpGet]
         [Route("{id}")]
-        public Member GetMember(string id)
+        public ActionResult<Member> GetMember(string id)
         {
-            return _membersRepository.GetMember(id);
+            if (_membersRepository.GetMember(id) == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_membersRepository.GetMember(id));
         }
 
         [HttpPost]
-        public void AddMember(Member member)
+        public IActionResult AddMember(Member member)
         {
             _membersRepository.AddMember(member);
+            return Ok();
         }
 
         [HttpPut]
         [Route("{id}")]
-        public void UpdateMember(string id, Member member)
+        public IActionResult UpdateMember(string id, Member member)
         {
+            if (_membersRepository.GetMember(id) == null)
+            {
+                return NotFound();
+            }
+
             _membersRepository.UpdateMember(id, member);
+            return Ok();
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public void DeleteMember(string id)
+        public IActionResult DeleteMember(string id)
         {
+            if (_membersRepository.GetMember(id) == null)
+            {
+                return NotFound();
+            }
+
             _membersRepository.DeleteMember(id);
+            return Ok();
         }
     }
 }
