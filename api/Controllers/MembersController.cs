@@ -14,9 +14,9 @@ namespace EzraTest.Controllers
     {
         private readonly IMembersRepository _membersRepository;
 
-        public MembersController()
+        public MembersController(IMembersRepository membersRepository)
         {
-            _membersRepository = new MembersRepository("app.db");
+            _membersRepository = membersRepository;
         }
         
         [HttpGet]

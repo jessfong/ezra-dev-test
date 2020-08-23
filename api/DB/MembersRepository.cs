@@ -10,6 +10,8 @@ namespace EzraTest.DB
     {
         private string _connectionString;
 
+        public MembersRepository() : this("app.db") { }
+
         public MembersRepository(string connectionString)
         {
             _connectionString = $"Data Source={connectionString}";
