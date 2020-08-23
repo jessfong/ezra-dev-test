@@ -18,7 +18,7 @@ namespace EzraTest.Controllers
         {
             _membersRepository = new MembersRepository("app.db");
         }
-
+        
         [HttpGet]
         public IEnumerable<Member> GetAllMembers()
         {
@@ -27,7 +27,7 @@ namespace EzraTest.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public Member GetMember(Guid id)
+        public Member GetMember(string id)
         {
             return _membersRepository.GetMember(id);
         }
@@ -40,14 +40,14 @@ namespace EzraTest.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public void UpdateMember(Guid id, Member member)
+        public void UpdateMember(string id, Member member)
         {
             _membersRepository.UpdateMember(id, member);
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public void DeleteMember(Guid id)
+        public void DeleteMember(string id)
         {
             _membersRepository.DeleteMember(id);
         }

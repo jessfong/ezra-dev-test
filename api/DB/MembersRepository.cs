@@ -18,11 +18,11 @@ namespace EzraTest.DB
         /// <inheritdoc />
         public IEnumerable<Member> GetMembers()
         {
-            return ExecuteQuery("SELECT * FROM MEMBERS", (reader) =>
+            return ExecuteQuery("SELECT * FROM MEMBERS", null, (reader) =>
             {
                 return new Member
                 {
-                    Id = reader.GetGuid(0),
+                    Id = reader.GetString(0),
                     Name = reader.GetString(1),
                     Email = reader.GetString(2)
                 };
@@ -30,13 +30,18 @@ namespace EzraTest.DB
         }
 
         /// <inheritdoc />
-        public Member GetMember(Guid id)
+        public Member GetMember(string id)
         {
-            return ExecuteQuery($"SELECT * FROM MEMBERS WHERE Id = '{id}'", (reader) =>
+            var parameters = new SqliteParameter[]
+            {
+                new SqliteParameter("@ID", id)
+            };
+
+            return ExecuteQuery($"SELECT * FROM MEMBERS WHERE ID = @ID", parameters, (reader) =>
             {
                 return new Member
                 {
-                    Id = Guid.Parse(reader.GetString(0)),
+                    Id = reader.GetString(0),
                     Name = reader.GetString(1),
                     Email = reader.GetString(2)
                 };
@@ -46,24 +51,41 @@ namespace EzraTest.DB
         /// <inheritdoc />
         public void AddMember(Member member)
         {
-            member.Id = Guid.NewGuid();
-            
-            ExecuteNonQuery($"INSERT INTO MEMBERS (ID, Name, Email) VALUES ({member.Id}, {member.Name}, {member.Email})");
+            var parameters = new SqliteParameter[]
+            {
+                new SqliteParameter("@ID", member.Id),
+                new SqliteParameter("@Name", member.Name),
+                new SqliteParameter("@Email", member.Email)
+            };
+
+            ExecuteNonQuery($"INSERT INTO MEMBERS (ID, Name, Email) VALUES (@ID, @Name, @Email)", parameters);
         }
 
         /// <inheritdoc />
-        public void UpdateMember(Guid id, Member member)
+        public void UpdateMember(string id, Member member)
         {
-            ExecuteNonQuery($"UPDATE MEMBERS SET NAME = '{member.Name}', EMAIL = '{member.Email}' WHERE ID = '{id}'");
+            var parameters = new SqliteParameter[]
+            {
+                new SqliteParameter("@ID", id),
+                new SqliteParameter("@Name", member.Name),
+                new SqliteParameter("@Email", member.Email)
+            };
+
+            ExecuteNonQuery($"UPDATE MEMBERS SET NAME = @Name, EMAIL = @Email WHERE ID = @ID", parameters);
         }
 
         /// <inheritdoc />
-        public void DeleteMember(Guid id)
+        public void DeleteMember(string id)
         {
-            ExecuteNonQuery($"DELETE FROM MEMBERS WHERE ID = '{id}'");
+            var parameters = new SqliteParameter[]
+            {
+                new SqliteParameter("@ID", id)
+            };
+
+            ExecuteNonQuery($"DELETE FROM MEMBERS WHERE ID = @ID", parameters);
         }
 
-        private IEnumerable<T> ExecuteQuery<T>(string commandText, Func<SqliteDataReader, T> func)
+        private IEnumerable<T> ExecuteQuery<T>(string commandText, SqliteParameter[] parameters, Func<SqliteDataReader, T> func)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -71,6 +93,12 @@ namespace EzraTest.DB
 
                 var command = connection.CreateCommand();
                 command.CommandText = commandText;
+
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters);
+                    command.Prepare();
+                }
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -82,7 +110,7 @@ namespace EzraTest.DB
             }
         }
 
-        private void ExecuteNonQuery(string commandText)
+        private void ExecuteNonQuery(string commandText, SqliteParameter[] parameters)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -90,6 +118,13 @@ namespace EzraTest.DB
 
                 var command = connection.CreateCommand();
                 command.CommandText = commandText;
+
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters);
+                    command.Prepare();
+                }
+
                 command.ExecuteNonQuery();
             }
         }

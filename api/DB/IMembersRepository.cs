@@ -18,7 +18,7 @@ namespace EzraTest.DB
         /// </summary>
         /// <param name="id">The id of the member to get.</param>
         /// <returns>The member if found; null otherwise.</returns>
-        Member GetMember(Guid id);
+        Member GetMember(string id);
 
         /// <summary>
         /// Adds the member to the database.
@@ -31,12 +31,12 @@ namespace EzraTest.DB
         /// </summary>
         /// <param name="id">The id of the member to update.</param>
         /// <param name="member">The new member data.</param>
-        void UpdateMember(Guid id, Member member);
+        void UpdateMember(string id, Member member);
 
         /// <summary>
         /// Removes the member from the database with <paramref name="id"/>.
         /// </summary>
         /// <param name="id">The id of the member.</param>
-        void DeleteMember(Guid id);
+        void DeleteMember(string id);
     }
 }
