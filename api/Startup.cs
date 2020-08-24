@@ -28,6 +28,7 @@ namespace EzraTest
         {
             services.AddControllers();
             services.AddSingleton<IMembersRepository, MembersRepository>();
+            services.AddSingleton<IMembersStore, MembersStore>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

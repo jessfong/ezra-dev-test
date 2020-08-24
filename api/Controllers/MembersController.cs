@@ -13,61 +13,91 @@ namespace EzraTest.Controllers
     public class MembersController : ControllerBase
     {
         private readonly IMembersRepository _membersRepository;
+        private readonly IMembersStore _membersStore;
 
-        public MembersController(IMembersRepository membersRepository)
+        public MembersController(IMembersRepository membersRepository, IMembersStore membersStore)
         {
             _membersRepository = membersRepository;
+            _membersStore = membersStore;
         }
         
         [HttpGet]
         public ActionResult<IEnumerable<Member>> GetAllMembers()
         {
-            return Ok(_membersRepository.GetMembers());
+            try
+            {
+                return Ok(_membersStore.GetMembers());
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpGet]
         [Route("{id}")]
         public ActionResult<Member> GetMember(string id)
         {
-            if (_membersRepository.GetMember(id) == null)
+            try
             {
-                return NotFound();
+                return Ok(_membersStore.GetMember(id));
             }
-
-            return Ok(_membersRepository.GetMember(id));
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]
         public IActionResult AddMember(Member member)
         {
-            _membersRepository.AddMember(member);
-            return Ok();
+            try
+            {
+                _membersStore.AddMember(member);
+                return Ok();
+            }
+            catch(ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut]
         [Route("{id}")]
         public IActionResult UpdateMember(string id, Member member)
         {
-            if (_membersRepository.GetMember(id) == null)
+            try
             {
-                return NotFound();
+                _membersStore.UpdateMember(id, member);
+                return Ok();
             }
-
-            _membersRepository.UpdateMember(id, member);
-            return Ok();
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpDelete]
         [Route("{id}")]
         public IActionResult DeleteMember(string id)
         {
-            if (_membersRepository.GetMember(id) == null)
+            try
             {
-                return NotFound();
+                _membersStore.DeleteMember(id);
+                return Ok();
             }
-
-            _membersRepository.DeleteMember(id);
-            return Ok();
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }
