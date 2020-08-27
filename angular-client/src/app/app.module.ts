@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
+import { EditMemberComponent } from './edit-member/edit-member.component';
 import { AddMemberComponent } from './add-member/add-member.component';
 
 @NgModule({
@@ -14,6 +15,7 @@ import { AddMemberComponent } from './add-member/add-member.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
+    EditMemberComponent,
     AddMemberComponent
   ],
   imports: [
@@ -22,7 +24,8 @@ import { AddMemberComponent } from './add-member/add-member.component';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'add-member', component: AddMemberComponent },
+      { path: 'edit-member/:id', component: EditMemberComponent },
+      { path: 'add-member', component: AddMemberComponent }
     ])
   ],
   providers: [],

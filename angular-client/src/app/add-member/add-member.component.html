@@ -1,8 +1,15 @@
 <h1>Add member</h1>
 
-<!-- TODO -->
-<!-- Implement me -->
+<form (ngSubmit)="addMember()" #addForm="ngForm">
+  <div class="form-group">
+    <label for="name">Name:</label>
+    <input type="text" class="form-control" name="name" [(ngModel)]="newMember.name" placeholder="Name" required>
+  </div>
 
-<button class="btn btn-primary" (click)="addMember">
-    Add
-</button>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" class="form-control" name="email" [(ngModel)]="newMember.email" placeholder="Email" required>
+  </div>
+
+  <button class="btn btn-primary" type="submit" [disabled]="addForm.form.invalid">Add</button>
+</form>
